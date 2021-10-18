@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const path = require('path');
 const staticPath = path.join(__dirname,"../");
-const date = require(__dirname + "/date.js");
 
 const app = express();
 
@@ -11,27 +11,53 @@ app.use(express.static(staticPath));
 app.set('views',staticPath+'/views');
 app.set('view engine','ejs');
 
-const newItems = ['Task1', 'Task2'];
-const workList = [];
+mongoose.connect("mongodb://localhost:27017/todolistDB",{ useNewUrlParser: true })
 
-app.get('/',(req,res)=>{
-    const day = date.getDate();
-    res.render('index',{
-                        ListTitle: day,
-                        newItems:newItems
-                    });
+const itemsSchema = {
+    name: String
+}
+
+const Item = mongoose.model("item", itemsSchema );
+
+const item1 = new Item({
+    name: "Task1"
 })
 
+const item2 = new Item({
+    name: "Task2"
+})
+
+const item3 = new Item({
+    name: "Task3"
+})
+
+const defaultItems = [ item1, item2, item3 ];
+
+app.get('/',(req,res)=>{
+    Item.find({},(err,result)=>{
+        if( result.length === 0){
+            Item.insertMany(defaultItems, (err) => {
+            if(err) console.log(err);
+            else    console.log("Inserted Successfully");
+            });
+            res.redirect('/');
+        }
+        if(err) console.log(err);
+        else{
+            res.render('index',{
+                ListTitle: 'Today',
+                newItems: result
+            });
+        }
+    });
+});
+
 app.post('/',(req,res)=>{
-    if( req.body.list === "WorkList"){
-        workList.push(req.body.newItem);
-        res.redirect('/work');
-    }
-    else{
-        newItems.push(req.body.newItem);
-        res.redirect("/");
-    }
-    
+    const task = new Item({
+        name: req.body.newItem
+    })
+    task.save();
+    res.redirect('/');
 })
 
 app.post('/work',(req,res)=>{
