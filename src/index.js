@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
 const staticPath = path.join(__dirname,"../");
+const _ = require('lodash');
 
 const app = express();
 
@@ -31,6 +32,13 @@ const item3 = new Item({
     name: "<== Hit this to delete an item"
 })
 
+const listSchema = {
+    name: String,
+    items: [itemsSchema]
+}
+
+const List = mongoose.model("List", listSchema);
+
 const defaultItems = [ item1, item2, item3 ];
 
 app.get('/',(req,res)=>{
@@ -52,32 +60,67 @@ app.get('/',(req,res)=>{
     });
 });
 
+app.get('/:newList',(req,res)=>{
+    const newListName = _.capitalize(req.params.newList);
+    List.findOne({name: newListName},(err,result)=>{
+        if(!err){
+            if(!result){
+                const list = new List({
+                    name: newListName,
+                    items: defaultItems
+                });
+                list.save();
+                res.redirect('/'+newListName);
+            }else{
+                res.render('index',{
+                    ListTitle: newListName,
+                    newItems: result.items
+                });
+            }    
+        }
+    });
+});
+
 app.post('/',(req,res)=>{
+    const itemName = req.body.newItem;
+    const listName = req.body.list;
     const task = new Item({
-        name: req.body.newItem
+        name: itemName
     })
-    task.save();
-    res.redirect('/');
+    if (listName === 'Today') {
+        task.save();
+        res.redirect('/');
+    } else {
+        List.findOne({ name: listName },(err,result)=>{
+            result.items.push(task);
+            result.save();
+            res.redirect("/"+listName);
+        })
+    }
+    
 })
 
 app.post("/delete", (req,res)=>{
     const checkedItemId = req.body.checkbox;
-    Item.findByIdAndRemove(checkedItemId,(err)=>{
-        if(err) console.log(err);
-        else    console.log("Successfully deleted!");
-    })
-    res.redirect("/");
+    const listName = req.body.listName;
+    if(listName === 'Today'){
+        Item.findByIdAndRemove(checkedItemId,(err)=>{
+            if(err) console.log(err);
+            else    console.log("Successfully deleted!");
+        })
+        res.redirect("/");
+    } else {
+        List.findOneAndUpdate({name: listName},{$pull: {items: { _id: checkedItemId}}},(err,result)=>{
+            if(!err){
+                res.redirect('/'+listName);
+            }
+        })
+    }
+    
 })
 
 app.post('/work',(req,res)=>{
     res.redirect("/work");
-})
-
-app.get('/work',(req,res)=>{
-    res.render('index',{
-                        ListTitle: 'WorkList',
-                        newItems:workList
-    });
 })
 
 app.listen(4000,()=>{

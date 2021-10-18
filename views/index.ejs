@@ -7,7 +7,7 @@
     <div class="box">
         <form class="item" action="/" method="post">
             <input type="text" name="newItem" placeholder="New item" autocomplete="off" required>
-            <button type="submit" name="list" value=<%= ListTitle %>>+</button>
+            <button type="submit" name="list" value="<%= ListTitle %>">+</button>
         </form>
 
         <%  newItems.map( items => {     %>
@@ -15,7 +15,8 @@
                 <div class="item">
                     <input name="checkbox" type="checkbox" value="<%=items._id%>" onChange="this.form.submit()">
                     <p><%= items.name %></p>  
-                </div>  
+                </div>
+                <input type="hidden" name="listName" value="<%= ListTitle %>"></input>  
             </form>
         <%    })  %>        
     </div>
