@@ -20,15 +20,15 @@ const itemsSchema = {
 const Item = mongoose.model("item", itemsSchema );
 
 const item1 = new Item({
-    name: "Task1"
+    name: "Welcome to Todo-List"
 })
 
 const item2 = new Item({
-    name: "Task2"
+    name: "Click + to add new items"
 })
 
 const item3 = new Item({
-    name: "Task3"
+    name: "<== Hit this to delete an item"
 })
 
 const defaultItems = [ item1, item2, item3 ];
@@ -58,6 +58,15 @@ app.post('/',(req,res)=>{
     })
     task.save();
     res.redirect('/');
+})
+
+app.post("/delete", (req,res)=>{
+    const checkedItemId = req.body.checkbox;
+    Item.findByIdAndRemove(checkedItemId,(err)=>{
+        if(err) console.log(err);
+        else    console.log("Successfully deleted!");
+    })
+    res.redirect("/");
 })
 
 app.post('/work',(req,res)=>{
