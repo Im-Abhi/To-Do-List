@@ -12,4 +12,4 @@ You can add tasks and check them when they are completed.
 7. Head over to localhost:4000 in your browser to view the app.
 
 ## Technologies Used
-HTML5, CSS3, JS, Express, NodeJs, MongoDB (Mongoose)
+EJS, CSS3, JS, Express, NodeJs, MongoDB (Mongoose)
