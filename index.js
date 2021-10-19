@@ -1,15 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const path = require('path');
-const staticPath = path.join(__dirname,"../");
 const _ = require('lodash');
 
 const app = express();
 
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static(staticPath));
-app.set('views',staticPath+'/views');
+app.use(express.static("public"));
+
 app.set('view engine','ejs');
 
 mongoose.connect("mongodb://localhost:27017/todolistDB",{ useNewUrlParser: true })
@@ -117,10 +115,6 @@ app.post("/delete", (req,res)=>{
         })
     }
     
-})
-
-app.post('/work',(req,res)=>{
-    res.redirect("/work");
 })
 
 app.listen(4000,()=>{
