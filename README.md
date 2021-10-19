@@ -8,8 +8,11 @@ You can add tasks and check them when they are completed.
 3. Cd into the the local repository
 4. Run the command to install the missing dependencies `npm install`
 5. Cd into the src folder inside the local repository.
-6. Run the command `nodemon index.js`. This command will start the server locally and will restart automatically if you make some changes.
-7. Head over to localhost:4000 in your browser to view the app.
+6. Install [mongoDB](https://www.mongodb.com/try/download/community) if you dont have it installed locally.
+7. Open up a new terminal and type the command `mongod` to run the mongoDB local server and don't close it.
+8. Now Run the command `nodemon index.js` inside the project folder. This command will start the server locally and will restart automatically if you make some changes.
+9. Head over to localhost:4000 in your browser to view the app.
+10. To create lists with some other name than (Today) in your browser type `localhost:4000/<YourListName>` replace <YourListName> with any name you want to give to your list. This will create a new List and you can access it using the same as mentioned above.
 
 ## Technologies Used
 EJS, CSS3, JS, Express, NodeJs, MongoDB (Mongoose)
