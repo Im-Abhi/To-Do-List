@@ -1,6 +1,7 @@
 # To-Do-List
 It's a simple To-Do-List App<br>
-You can add tasks and check them when they are completed.
+You can add tasks and check them when they are completed.<br/>
+![msedge_2uD0uNwhHK](https://user-images.githubusercontent.com/86161191/138548830-c51fbae6-9a12-41a0-94d9-153fe90140a0.png)
 
 ## Using On Your Local Machine
 1. Make sure you have **NodeJs** installed.
